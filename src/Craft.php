@@ -8,9 +8,7 @@ use Intervention\Image\ImageManager;
 use InvalidArgumentException;
 use function count;
 use function hexdec;
-use function imagealphablending;
 use function imagecolorallocate;
-use function imagecopy;
 use function imagecreate;
 use function imagefilledrectangle;
 use function imagepng;
@@ -30,7 +28,9 @@ class Craft {
 
 	private array $slots = [];
 
-	public function __construct(int $type){
+	private $options ;
+
+	public function __construct(int $type, array $options = []){
 		$this->type = $type;
 		$int = 0;
 		$buffer = [];
@@ -43,6 +43,18 @@ class Craft {
 			}else{
 				$int++;
 			}
+		}
+
+		$this->options["craft-background"] = $options;
+		if(empty($options["background-color"])){
+			$this->options["background-color"] = [
+				hexdec("2E"), hexdec("2E"), hexdec("2E")
+			];
+		}
+		if(empty($options["craft-background"])){
+			$this->options["craft-background"] = [
+				hexdec("3E"), hexdec("3E"), hexdec("3E")
+			];
 		}
 	}
 
@@ -57,8 +69,8 @@ class Craft {
 	public function generate($path) : void{
 
 		$canva = imagecreate(self::CRAFT_SIZE[0], self::CRAFT_SIZE[1]);
-		imagecolorallocate($canva,hexdec("2E"), hexdec("2E"), hexdec("2E"));
-		$caseColor = imagecolorallocate($canva, hexdec("3E"), hexdec("3E"), hexdec("3E"));
+		imagecolorallocate($canva, $this->options["background-color"][0], $this->options["background-color"][1], $this->options["background-color"][2]);
+		$caseColor = imagecolorallocate($canva, $this->options["craft-background"][0], $this->options["craft-background"][1], $this->options["craft-background"][2]);
 
 		for ($i = 1; $i <= 9; $i++) {
 			$coordonate = $this->getSlotFill($i);
@@ -107,11 +119,5 @@ class Craft {
 			}
 		}
 		throw new InvalidArgumentException("Slot is index of bound 1-9, $slot given");
-	}
-
-	private function imagelogo(&$dst_image, $src_image, int $dst_x, int $dst_y, int $src_x, int $src_y, int $src_width, int $src_height) {
-		imagealphablending($dst_image, true);
-		imagealphablending($src_image, true);
-		imagecopy($dst_image, $src_image, $dst_x, $dst_y, $src_x, $src_y, $src_width, $src_height);
 	}
 }
