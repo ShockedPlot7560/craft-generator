@@ -1,0 +1,5 @@
+{
+    "intelephense.environment.includePaths": [
+        "vendor/intervention/image/src/Intervention/Image"
+    ]
+}

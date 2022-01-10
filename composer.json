@@ -1,0 +1,19 @@
+{
+    "name": "shockedplot7560/craft-generator",
+    "require": {
+        "php": ">=8.0",
+        "intervention/image": "^2.7"
+    },
+    "license": "GPL",
+    "authors": [
+        {
+            "name": "ShockedPlot7560",
+            "email": "66992287+ShockedPlot7560@users.noreply.github.com"
+        }
+    ],
+    "autoload": {
+        "psr-4": {
+            "ShockedPlot7560\\craftGenerator\\": "src"
+        }
+    }
+}
