@@ -9,12 +9,9 @@ use function imagecreatefrompng;
 
 class Item {
 	private $iconUrl;
-	private $name;
-	private $slot;
 
-	public function __construct(string $url, string $name){
+	public function __construct(string $url){
 		$this->iconUrl = $url;
-		$this->name = $name;
 	}
 
 	public function getIconUrl() : string{
@@ -24,12 +21,4 @@ class Item {
 	public function getImage() : GdImage{
 		return imagecreatefrompng($this->getIconUrl());
 	}
-
-	public function getName() : string{
-		return $this->name;
-	}
-
-    public function setSlot(int $slot): void{
-		$this->slot = $slot;
-    }
 }
