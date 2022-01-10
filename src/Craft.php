@@ -8,10 +8,18 @@ use Intervention\Image\ImageManager;
 use InvalidArgumentException;
 use function count;
 use function hexdec;
+use function imagealphablending;
 use function imagecolorallocate;
+use function imagecolorallocatealpha;
+use function imagecopyresampled;
 use function imagecreate;
+use function imagecreatetruecolor;
+use function imagefill;
 use function imagefilledrectangle;
 use function imagepng;
+use function imagesavealpha;
+use function imagesx;
+use function imagesy;
 
 class Craft {
 
@@ -88,7 +96,16 @@ class Craft {
 		$image = $manager->make($path);
 		foreach ($this->items as $slot => $item) {
 			$coordonate = $this->getSlotFill($slot);
-			$image->insert($item->getIconUrl(), 'top-left', $coordonate[0], $coordonate[1]);
+			$src = $item->getImage();
+			$resized = imagecreatetruecolor(16, 16);
+
+			imagealphablending($resized, true);
+			imagesavealpha($resized, true);
+
+			$tranparent = imagecolorallocatealpha($resized, 255, 255, 255, 127);
+			imagefill($resized, 0, 0, $tranparent);
+			imagecopyresampled($resized, $src, 0, 0, 0, 0, 16, 16, imagesx($src), imagesy($src));
+			$image->insert($resized, 'top-left', $coordonate[0], $coordonate[1]);
 		}
 		$image->save($path);
 	}
