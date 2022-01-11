@@ -7,7 +7,12 @@ use ShockedPlot7560\craftGenerator\Item;
 
 require dirname(__DIR__) . "/vendor/autoload.php";
 
-$craft = new Craft(1);
+$craft = new Craft(1, [
+	"size_base" => [
+		1080, 1080
+
+	]
+]);
 $craft->addItem(new Item(__DIR__ . "/amethyst_shard.png", "Amethyst"), 1);
 $craft->addItem(new Item(__DIR__ . "/apple.png", "Apply"), 9);
 $craft->addItem(new Item(__DIR__ . "/bamboo.png", "Bamboo"), Craft::CRAFT_SLOT_RESULT);

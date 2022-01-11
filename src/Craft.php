@@ -23,10 +23,7 @@ use function imagesy;
 
 class Craft {
 
-	private const CRAFT_SIZE = [
-		16 * 4 + 4 * 2 + 32 + 16,
-		16 * 3 + 4 * 2 + 16
-	];
+	private array $CRAFT_SIZE;
 	private const CRAFT_SLOT_SIZE = 15;
 	public const CRAFT_SLOT_RESULT = 14;
 
@@ -53,7 +50,7 @@ class Craft {
 			}
 		}
 
-		$this->options["craft-background"] = $options;
+		$this->options = $options;
 		if(empty($options["background-color"])){
 			$this->options["background-color"] = [
 				hexdec("2E"), hexdec("2E"), hexdec("2E")
@@ -64,6 +61,15 @@ class Craft {
 				hexdec("3E"), hexdec("3E"), hexdec("3E")
 			];
 		}
+		if(empty($options["size_base"])){
+			$this->options["size_base"] = [
+				16, 16
+			];
+		}
+		$this->CRAFT_SIZE = [
+			$this->options["size_base"][0] * 4 + $this->options["size_base"][0] / 4 * 2 + $this->options["size_base"][0] * 2 + $this->options["size_base"][0],
+			$this->options["size_base"][1] * 3 + $this->options["size_base"][1] / 4 * 2 + $this->options["size_base"][1]
+		];
 	}
 
 	public function addItem(Item $item, int $slot) : void{
@@ -76,7 +82,7 @@ class Craft {
 
 	public function generate($path) : void{
 		$this->addItem(new Item(__DIR__ . "/arrow.png"), 11);
-		$canva = imagecreate(self::CRAFT_SIZE[0], self::CRAFT_SIZE[1]);
+		$canva = imagecreate($this->CRAFT_SIZE[0], $this->CRAFT_SIZE[1]);
 		imagecolorallocate($canva, $this->options["background-color"][0], $this->options["background-color"][1], $this->options["background-color"][2]);
 		$caseColor = imagecolorallocate($canva, $this->options["craft-background"][0], $this->options["craft-background"][1], $this->options["craft-background"][2]);
 
@@ -97,14 +103,14 @@ class Craft {
 		foreach ($this->items as $slot => $item) {
 			$coordonate = $this->getSlotFill($slot);
 			$src = $item->getImage();
-			$resized = imagecreatetruecolor(16, 16);
+			$resized = imagecreatetruecolor($this->options["size_base"][0], $this->options["size_base"][1]);
 
 			imagealphablending($resized, true);
 			imagesavealpha($resized, true);
 
 			$tranparent = imagecolorallocatealpha($resized, 255, 255, 255, 127);
 			imagefill($resized, 0, 0, $tranparent);
-			imagecopyresampled($resized, $src, 0, 0, 0, 0, 16, 16, imagesx($src), imagesy($src));
+			imagecopyresampled($resized, $src, 0, 0, 0, 0, $this->options["size_base"][0], $this->options["size_base"][1], imagesx($src), imagesy($src));
 			$image->insert($resized, 'top-left', $coordonate[0], $coordonate[1]);
 		}
 		$image->save($path);
@@ -127,10 +133,10 @@ class Craft {
 			for ($j = 0; $j < count($this->slots[$i]); $j++) {
 				if($this->slots[$i][$j] == $slot){
 					return [
-						8 + (16 + 4) * $i,
-						8 + (16 + 4) * $j,
-						8 + 16 + (16 + 4) * $i - 1,
-						8 + 16 + (16 + 4) * $j - 1
+						$this->options["size_base"][0] / 2 + ($this->options["size_base"][0] + $this->options["size_base"][0] / 4) * $i,
+						$this->options["size_base"][1] / 2 + ($this->options["size_base"][1] + $this->options["size_base"][1] / 4) * $j,
+						$this->options["size_base"][0] / 2 + $this->options["size_base"][0] + ($this->options["size_base"][0] + $this->options["size_base"][0] / 4) * $i - 1,
+						$this->options["size_base"][1] / 2 + $this->options["size_base"][1] + ($this->options["size_base"][1] + $this->options["size_base"][1] / 4) * $j - 1
 					];
 				}
 			}
