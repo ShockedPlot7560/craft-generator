@@ -75,7 +75,7 @@ class Craft {
 	}
 
 	public function generate($path) : void{
-
+		$this->addItem(new Item(__DIR__ . "/arrow.png"), 11);
 		$canva = imagecreate(self::CRAFT_SIZE[0], self::CRAFT_SIZE[1]);
 		imagecolorallocate($canva, $this->options["background-color"][0], $this->options["background-color"][1], $this->options["background-color"][2]);
 		$caseColor = imagecolorallocate($canva, $this->options["craft-background"][0], $this->options["craft-background"][1], $this->options["craft-background"][2]);
